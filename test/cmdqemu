@@ -1,0 +1,6 @@
+#!/bin/bash
+
+#F:\Software\VNC-Viewer-7.10.0-Windows-64bit.exe -listen 5500
+
+qemu -netdev id=extnet,type=user -s -S -device rtl8139,bootindex=0,romfile=../boot.bin,netdev=extnet -vnc reverse=on,vnc=192.168.5.248:5500 -monitor stdio
+qemu -netdev id=extnet,type=user -device rtl8139,bootindex=0,romfile=../boot.bin,netdev=extnet -vnc reverse=on,vnc=192.168.5.248:5500 -monitor stdio

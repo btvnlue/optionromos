@@ -153,7 +153,8 @@ int main(int argc, char* argv[])
 	/* Write Checksum byte */
 		
 		/* Put the file pointer at last byte */
-		if(fseek(fp,-1,SEEK_END) != 0)
+//		if(fseek(fp,-1,SEEK_END) != 0)
+		if(fseek(fp,6,SEEK_SET) != 0)
 		{
 			printf("Failed to seek through the file\nclosing program ...");
 			return -1;

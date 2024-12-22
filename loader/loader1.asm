@@ -45,8 +45,8 @@ ROMsize	db	ROM_Size	;;1024 bytes
 ;----------------------------
 PCI_DATA_STRUC:
 	db	'PCIR'		;PCI Header Sign
-	dw	0x9004		;Vendor ID
-	dw	0x8178		;Device ID
+	dw	0x10ec		;Vendor ID
+	dw	0x8139		;Device ID
 	dw	0x00		;VPD
 	dw	0x18		;PCI data struc length (byte)
 	db	0x00		;PCI Data struct Rev

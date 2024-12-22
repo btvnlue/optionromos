@@ -22,4 +22,4 @@ clean:
 	$(MAKE) -C $(UTILS_DIR) clean
 	$(MAKE) -C $(LOADER_DIR) clean
 	$(MAKE) -C $(KERNEL_DIR) clean
-	rm -rf $(MERGEBIN) $(PATCH2PNPROM) *.bin *~
+	rm -rf $(MERGEBIN) $(PATCH2PNPROM) *.bin

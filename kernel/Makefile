@@ -6,10 +6,10 @@
 include ../var.mak
 
 CC= gcc
-ENTRYPOINT_CFLAGS= -ffreestanding -c
-CFLAGS= -c
+ENTRYPOINT_CFLAGS= -ffreestanding -c -g -fno-pie -m32
+CFLAGS= -c -g -fno-pie -m32
 LD= ld
-KERNEL_LDFLAGS= -Ttext 0x7E00 -e main -N --oformat binary
+KERNEL_LDFLAGS= -m elf_i386 -s -Ttext 0x7E00 -e main -N --oformat binary
 KERNEL_ROMSIZE=64512
 
 all: main.o video.o ports.o
@@ -27,4 +27,4 @@ main.o: main.c
 	$(CC) $(ENTRYPOINT_CFLAGS) -o $@ $<
 
 clean:
-	rm -rf *.bin *.o $(ZEROEXTEND) *~
+	rm -rf *.bin *.o 

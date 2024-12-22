@@ -7,16 +7,56 @@
 include ../var.mak
 
 ASM_FLAGS= -fbin
+LOADER_OBJS=loader1.o loader2.o
+LOADER_LDS=load1.lds load2.lds
 
-all: $(FIRST_STAGE_LOADER) $(SECOND_STAGE_LOADER)
+all: $(KERNEL_LOADER) dump
+	ls -l $(KERNEL_LOADER)
+
+$(KERNEL_LOADER): $(FIRST_STAGE_LOADER) $(SECOND_STAGE_LOADER)
+	cat $(FIRST_STAGE_LOADER) $(SECOND_STAGE_LOADER) > $(KERNEL_LOADER)
+
+$(FIRST_STAGE_LOADER): loader1.o loader1.lds
+	ld -T loader1.lds -o $@ $<
+
+$(SECOND_STAGE_LOADER): loader2.o loader2.lds
+	ld -T loader2.lds -o $@ $<
+
+allraw: $(FIRST_STAGE_LOADER) $(SECOND_STAGE_LOADER) $(LOADER_OBJS)
 	cp ../$(UTILS_DIR)/$(MERGEBIN) .
 	./$(MERGEBIN) $(FIRST_STAGE_LOADER) $(SECOND_STAGE_LOADER) $(KERNEL_LOADER)
 
-$(FIRST_STAGE_LOADER): loader1.asm
+raw.$(FIRST_STAGE_LOADER): loader1.asm
 	$(ASM) $(ASM_FLAGS) $< -o $@
 
-$(SECOND_STAGE_LOADER): loader2.asm
+raw.$(SECOND_STAGE_LOADER): loader2.asm
 	$(ASM) $(ASM_FLAGS) $< -o $@
+
+loader1.o: loader1.s
+	gcc -g -m32 -c -o $@ $<
+
+loader2.o: loader2.s
+	gcc -g -m32 -c -o $@ $<
 
 clean:
-	rm -rf *.bin $(MERGEBIN) *~
+	rm -rf *.bin $(MERGEBIN)
+
+BINSEGSIZE=204
+
+dump: loader1.bin l1.bin
+	dd if=l1.bin of=l1m.bin bs=$(BINSEGSIZE) skip=1
+	dd if=l2.bin of=l2m.bin bs=$(BINSEGSIZE) skip=1
+	dd if=loader1.bin of=l1n.bin bs=$(BINSEGSIZE) skip=1
+	dd if=loader2.bin of=l2n.bin bs=$(BINSEGSIZE) skip=1
+
+	objdump -b binary -m i386 -d -D l2n.bin > nnn
+	objdump -b binary -m i386 -d -D l2m.bin > ooo
+	objdump -b binary -m i8086 -d -D l1.bin > ppp
+	objdump -b binary -m i8086 -d -D loader1.bin > qqq
+	objdump -b binary -m i8086 -d -D l2.bin > eee
+	objdump -b binary -m i8086 -d -D loader2.bin > fff
+
+	hd loader1.bin > aaa
+	hd l1.bin > bbb
+	hd l2m.bin > ccc
+	hd l2n.bin > ddd

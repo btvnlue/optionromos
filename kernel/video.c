@@ -29,7 +29,7 @@ void print(const char *_message)
   out(0x3D4, 14);
   offset = in(0x3D5) << 8;
   out(0x3D4, 15);
-  offset |= in(0x3D5);
+  offset = in(0x3D5);
 
   // Start at writing at cursor position
   vidmem += offset*2;

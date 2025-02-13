@@ -10,7 +10,7 @@ ASM_FLAGS= -fbin
 LOADER_OBJS=loader1.o loader2.o
 LOADER_LDS=load1.lds load2.lds
 
-all: $(KERNEL_LOADER) dump
+all: $(KERNEL_LOADER)
 	ls -l $(KERNEL_LOADER)
 
 $(KERNEL_LOADER): $(FIRST_STAGE_LOADER) $(SECOND_STAGE_LOADER)
@@ -39,24 +39,16 @@ loader2.o: loader2.s
 	gcc -g -m32 -c -o $@ $<
 
 clean:
-	rm -rf *.bin $(MERGEBIN)
+	rm -rf *.bin $(MERGEBIN) ??? *.o
 
 BINSEGSIZE=204
 
-dump: loader1.bin l1.bin
-	dd if=l1.bin of=l1m.bin bs=$(BINSEGSIZE) skip=1
-	dd if=l2.bin of=l2m.bin bs=$(BINSEGSIZE) skip=1
+dump: loader1.bin
 	dd if=loader1.bin of=l1n.bin bs=$(BINSEGSIZE) skip=1
 	dd if=loader2.bin of=l2n.bin bs=$(BINSEGSIZE) skip=1
 
-	objdump -b binary -m i386 -d -D l2n.bin > nnn
-	objdump -b binary -m i386 -d -D l2m.bin > ooo
-	objdump -b binary -m i8086 -d -D l1.bin > ppp
 	objdump -b binary -m i8086 -d -D loader1.bin > qqq
-	objdump -b binary -m i8086 -d -D l2.bin > eee
 	objdump -b binary -m i8086 -d -D loader2.bin > fff
 
 	hd loader1.bin > aaa
-	hd l1.bin > bbb
-	hd l2m.bin > ccc
-	hd l2n.bin > ddd
+	hd loader2.bin > bbb
